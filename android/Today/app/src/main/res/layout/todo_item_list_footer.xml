@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:paddingBottom="18dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:paddingTop="18dp">
+
+    <EditText
+        android:id="@+id/new_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:drawableLeft="@drawable/ic_add_black_24dp"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_add_black_24dp"
+        android:hint="Add a new todo"
+        android:singleLine="true"
+        android:textSize="16sp"/>
+</LinearLayout>
