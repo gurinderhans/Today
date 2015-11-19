@@ -127,6 +127,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         clearEditing();
 
         prevEditingView = (TodoItemView) view.findViewById(R.id.item_content);
+        prevEditingView.setSelection(prevEditingView.getText().length());
         prevEditingView.enableEditing();
 
         // listen for done event to hide keyboard and disable editing
