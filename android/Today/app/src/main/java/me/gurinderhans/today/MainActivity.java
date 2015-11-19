@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(0x66000000);
 
         ViewPager pager = (ViewPager) findViewById(R.id.today_pager);
-//        pager.setPageTransformer(true, new PagerDepthTransformer());
+        pager.setPageTransformer(true, new PagerDepthTransformer());
         pager.setAdapter(new TodayPagerAdapter(getSupportFragmentManager()));
     }
 }

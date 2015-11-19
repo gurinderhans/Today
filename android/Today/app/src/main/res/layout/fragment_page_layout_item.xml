@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:paddingBottom="14dp"
-              android:paddingTop="14dp">
+              android:paddingBottom="18dp"
+              android:paddingTop="18dp">
 
     <me.gurinderhans.today.TodoItemView
         android:id="@+id/item_content"

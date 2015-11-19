@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EEE"
     tools:context=".MainActivity">
 
     <android.support.v4.view.ViewPager
-        android:layout_marginTop="20dp"
         android:id="@+id/today_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"/>
 </RelativeLayout>

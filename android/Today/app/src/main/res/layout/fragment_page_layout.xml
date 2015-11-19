@@ -8,6 +8,8 @@
         android:id="@+id/items_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:background="@drawable/round_bg"
         android:descendantFocusability="beforeDescendants"
         android:divider="@null"
         android:dividerHeight="0dp"

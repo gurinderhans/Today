@@ -1,6 +1,7 @@
 package me.gurinderhans.today;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,14 @@ public class TodayPagerDataAdapter extends ArrayAdapter<TodoItem> {
 
         holder = (TodoItemViewHolder) convertView.getTag();
 
-        holder.itemContent.setText(mTodoItemsList.get(position).getText());
+        TodoItem todoItem = mTodoItemsList.get(position);
+        holder.itemContent.setText(todoItem.getText());
+
+        if (todoItem.isDone()) {
+            holder.itemContent.setPaintFlags(holder.itemContent.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.itemContent.setPaintFlags(holder.itemContent.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
 
         return convertView;
     }

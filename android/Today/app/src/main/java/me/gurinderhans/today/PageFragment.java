@@ -168,15 +168,8 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
         position -= mListView.getHeaderViewsCount();
 
-        TodoItemViewHolder viewHolder = (TodoItemViewHolder) mAdapter.getView(position, view, parent).getTag();
-        TodoItemView contentView = viewHolder.itemContent;
-        if (mAdapter.getItem(position).isDone()) {
-            contentView.setPaintFlags(contentView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        } else {
-            contentView.setPaintFlags(contentView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-
         mAdapter.getItem(position).toggleDone();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
