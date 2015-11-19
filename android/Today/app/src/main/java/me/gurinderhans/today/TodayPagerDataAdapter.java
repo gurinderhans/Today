@@ -47,10 +47,10 @@ public class TodayPagerDataAdapter extends ArrayAdapter<TodoItem> {
         return convertView;
     }
 
-    public void addItem(String text) {
+    public void insertItem(String text, int index) {
         TodoItem todoItem = new TodoItem(text);
-        mTodoItemsList.add(todoItem);
-        this.add(todoItem);
+        mTodoItemsList.add(index, todoItem);
+        this.insert(todoItem, index);
         this.notifyDataSetChanged();
     }
 

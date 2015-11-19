@@ -35,12 +35,15 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     private TodayPagerDataAdapter mAdapter;
 
     private TodoItemView prevEditingView;
+    private ListView mListView;
+    private EditText mAddTodoText;
 
     private OnEditorActionListener onEditorActionListener = new OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 clearEditing();
+                hideKeyboard(getActivity());
             }
             return true;
         }
@@ -61,30 +64,29 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_page_layout, container, false);
 
-        ((TextView) rootView.findViewById(R.id.day_title))
-                .setText(getArguments().getString(PageFragmentKeys.TITLE));
-
         mAdapter = new TodayPagerDataAdapter(getContext(), R.layout.fragment_page_layout_item);
 
-        final ListView lv = (ListView) rootView.findViewById(R.id.items_list);
-        lv.setAdapter(mAdapter);
+        mListView = (ListView) rootView.findViewById(R.id.items_list);
+        mListView.setAdapter(mAdapter);
 
-        final View footer = inflater.inflate(R.layout.todo_item_list_footer, null);
-        lv.addFooterView(footer);
+        final View header = inflater.inflate(R.layout.todo_item_list_header, null);
+        mListView.addHeaderView(header);
 
-        lv.setOnItemClickListener(this);
-        lv.setOnItemLongClickListener(this);
+        mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
 
-        final EditText addTodoText = (EditText) footer.findViewById(R.id.new_item_text);
+        mAddTodoText = (EditText) header.findViewById(R.id.new_item_text);
 
-        addTodoText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mAddTodoText.setHint(getArguments().getString(PageFragmentKeys.TITLE));
+
+        mAddTodoText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 clearEditing();
             }
         });
 
-        addTodoText.addTextChangedListener(new TextWatcher() {
+        mAddTodoText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -97,35 +99,40 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (addTodoText.getText().length() > 0)
-                    footer.findViewById(R.id.cancel_adding_item).setVisibility(View.VISIBLE);
-                else footer.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
+                if (mAddTodoText.getText().length() > 0)
+                    header.findViewById(R.id.cancel_adding_item).setVisibility(View.VISIBLE);
+                else header.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
             }
         });
 
-        addTodoText.setOnEditorActionListener(new OnEditorActionListener() {
+        mAddTodoText.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    String text = addTodoText.getText().toString();
+                    String text = mAddTodoText.getText().toString();
                     if (!text.isEmpty())
-                        mAdapter.addItem(text);
+                        mAdapter.insertItem(text, 0);
+                    else {
+                        mAddTodoText.clearFocus();
+                        hideKeyboard(getActivity());
+                    }
 
-                    addTodoText.setText("");
-                    lv.setSelection(mAdapter.getCount() - 1);
+                    mAddTodoText.setText("");
+                    mListView.setSelection(mAdapter.getCount() - 1);
                     clearEditing();
+                    mAdapter.notifyDataSetChanged();
                 }
                 return true;
             }
         });
 
-        footer.findViewById(R.id.cancel_adding_item).setOnClickListener(new View.OnClickListener() {
+        header.findViewById(R.id.cancel_adding_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTodoText.setText("");
-                addTodoText.clearFocus();
+                mAddTodoText.setText("");
+                mAddTodoText.clearFocus();
                 hideKeyboard(getActivity());
-                footer.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
+                header.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -136,14 +143,18 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         if (prevEditingView != null) {
             prevEditingView.disableEditing();
             prevEditingView = null;
-            hideKeyboard(getActivity());
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG, "clicked item @ " + position);
+
         clearEditing();
+        mAddTodoText.clearFocus();
+        hideKeyboard(getActivity());
+
+        position -= mListView.getHeaderViewsCount();
 
         TodoItemViewHolder viewHolder = (TodoItemViewHolder) mAdapter.getView(position, view, parent).getTag();
         TodoItemView contentView = viewHolder.itemContent;
@@ -159,7 +170,9 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG, "editing item");
+
         clearEditing();
+        mAddTodoText.clearFocus();
 
         prevEditingView = (TodoItemView) view.findViewById(R.id.item_content);
         prevEditingView.setSelection(prevEditingView.getText().length());

@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="18dp"
-                android:paddingTop="18dp">
+                android:paddingBottom="8dp"
+                android:paddingTop="16dp">
 
     <EditText
         android:id="@+id/new_item_text"
@@ -14,13 +14,11 @@
         android:layout_marginRight="35dp"
         android:layout_marginStart="20dp"
         android:background="@null"
-        android:drawableLeft="@drawable/ic_add_black_24dp"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_add_black_24dp"
         android:hint="Add a new todo"
         android:imeOptions="actionDone"
         android:singleLine="true"
-        android:textSize="16sp"/>
+        android:textSize="28sp"
+        android:textStyle="bold"/>
 
     <ImageView
         android:id="@+id/cancel_adding_item"
