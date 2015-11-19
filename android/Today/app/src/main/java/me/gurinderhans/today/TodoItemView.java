@@ -31,10 +31,7 @@ public class TodoItemView extends EditText {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mIsEditable)
-            return super.onTouchEvent(event);
-        else
-            return false;
+        return mIsEditable && super.onTouchEvent(event);
     }
 
     private void setEditable(boolean editable) {

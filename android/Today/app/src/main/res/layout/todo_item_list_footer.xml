@@ -17,6 +17,7 @@
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_add_black_24dp"
         android:hint="Add a new todo"
+        android:imeOptions="actionDone"
         android:singleLine="true"
         android:textSize="16sp"/>
 </LinearLayout>
