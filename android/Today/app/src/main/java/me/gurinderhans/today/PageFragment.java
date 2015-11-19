@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -59,6 +60,16 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         return fragment;
     }
 
+    public static void hideKeyboard(Activity activity) {
+        try {
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            // Ignore exceptions if any
+            Log.e(TAG, e.toString(), e);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,7 +90,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
         mAddTodoText.setHint(getArguments().getString(PageFragmentKeys.TITLE));
 
-        mAddTodoText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mAddTodoText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 clearEditing();
@@ -171,10 +182,14 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG, "editing item");
 
+        if (position == 0)
+            return false;
+
         clearEditing();
         mAddTodoText.clearFocus();
 
         prevEditingView = (TodoItemView) view.findViewById(R.id.item_content);
+
         prevEditingView.setSelection(prevEditingView.getText().length());
         prevEditingView.enableEditing();
 
@@ -187,15 +202,5 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         imm.showSoftInput(prevEditingView, InputMethodManager.SHOW_IMPLICIT);
 
         return true;
-    }
-
-    public static void hideKeyboard(Activity activity) {
-        try {
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (Exception e) {
-            // Ignore exceptions if any
-            Log.e(TAG, e.toString(), e);
-        }
     }
 }

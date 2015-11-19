@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="8dp"
-                android:paddingTop="16dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:weightSum="1">
 
     <EditText
         android:id="@+id/new_item_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="35dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="35dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="0.9"
         android:background="@null"
-        android:hint="Add a new todo"
+        android:hint="@string/app_name"
         android:imeOptions="actionDone"
         android:singleLine="true"
-        android:textSize="28sp"
-        android:textStyle="bold"/>
+        android:textCursorDrawable="@null"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        />
 
     <ImageView
         android:id="@+id/cancel_adding_item"
-        android:layout_width="35dp"
+        android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingBottom="12dp"
-        android:paddingTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="0.1"
+        android:padding="5dp"
         android:src="@drawable/ic_close_black_24dp"
         android:visibility="invisible"
         />
-</RelativeLayout>
+</LinearLayout>
