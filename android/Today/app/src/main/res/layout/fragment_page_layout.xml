@@ -9,9 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:paddingLeft="11dp"
-        android:paddingRight="11dp"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
         android:text="@string/title_today"
         android:textSize="36sp"/>
 

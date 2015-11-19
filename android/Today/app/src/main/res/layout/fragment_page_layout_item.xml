@@ -3,21 +3,19 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:paddingBottom="18dp"
-              android:paddingLeft="10dp"
-              android:paddingRight="10dp"
               android:paddingTop="18dp">
 
     <me.gurinderhans.today.TodoItemView
         android:id="@+id/item_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:background="@null"
         android:gravity="center_vertical"
         android:imeOptions="actionDone"
-        android:singleLine="true"
+        android:paddingEnd="27dp"
+        android:paddingStart="27dp"
         android:text="Todo item text"
+        android:textColor="@android:color/primary_text_light_nodisable"
         android:textSize="16sp"/>
 
 </LinearLayout>

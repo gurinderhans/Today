@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal"
-              android:paddingBottom="18dp"
-              android:paddingLeft="10dp"
-              android:paddingRight="10dp"
-              android:paddingTop="18dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp">
 
     <EditText
         android:id="@+id/new_item_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="35dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginStart="20dp"
         android:background="@null"
         android:drawableLeft="@drawable/ic_add_black_24dp"
         android:drawablePadding="8dp"
@@ -20,4 +21,17 @@
         android:imeOptions="actionDone"
         android:singleLine="true"
         android:textSize="16sp"/>
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/cancel_adding_item"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingBottom="12dp"
+        android:paddingTop="2dp"
+        android:src="@drawable/ic_close_black_24dp"
+        android:visibility="invisible"
+        />
+</RelativeLayout>

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -66,19 +68,40 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         final ListView lv = (ListView) rootView.findViewById(R.id.items_list);
         lv.setAdapter(mAdapter);
 
-        View footer = inflater.inflate(R.layout.todo_item_list_footer, null);
+        final View footer = inflater.inflate(R.layout.todo_item_list_footer, null);
         lv.addFooterView(footer);
 
         lv.setOnItemClickListener(this);
         lv.setOnItemLongClickListener(this);
 
         final EditText addTodoText = (EditText) footer.findViewById(R.id.new_item_text);
+
         addTodoText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 clearEditing();
             }
         });
+
+        addTodoText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (addTodoText.getText().length() > 0)
+                    footer.findViewById(R.id.cancel_adding_item).setVisibility(View.VISIBLE);
+                else footer.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
+            }
+        });
+
         addTodoText.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -92,6 +115,16 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
                     clearEditing();
                 }
                 return true;
+            }
+        });
+
+        footer.findViewById(R.id.cancel_adding_item).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTodoText.setText("");
+                addTodoText.clearFocus();
+                hideKeyboard(getActivity());
+                footer.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
             }
         });
 
