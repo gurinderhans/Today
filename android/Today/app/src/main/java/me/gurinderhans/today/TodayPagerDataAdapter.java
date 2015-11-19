@@ -54,7 +54,7 @@ public class TodayPagerDataAdapter extends ArrayAdapter<TodoItem> {
         this.notifyDataSetChanged();
     }
 
-    private static final class TodoItemViewHolder {
+    public static final class TodoItemViewHolder {
         TodoItemView itemContent;
     }
 }

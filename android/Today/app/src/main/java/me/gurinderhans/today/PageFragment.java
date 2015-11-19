@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import me.gurinderhans.today.Keys.PageFragmentKeys;
+import me.gurinderhans.today.TodayPagerDataAdapter.TodoItemViewHolder;
 
 /**
  * Created by ghans on 11/18/15.
@@ -144,7 +145,8 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         Log.i(TAG, "clicked item @ " + position);
         clearEditing();
 
-        TodoItemView contentView = (TodoItemView) view.findViewById(R.id.item_content);
+        TodoItemViewHolder viewHolder = (TodoItemViewHolder) mAdapter.getView(position, view, parent).getTag();
+        TodoItemView contentView = viewHolder.itemContent;
         if (mAdapter.getItem(position).isDone()) {
             contentView.setPaintFlags(contentView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         } else {
