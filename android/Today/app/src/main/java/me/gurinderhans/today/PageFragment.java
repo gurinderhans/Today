@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -137,7 +138,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
             }
         });
 
-        header.findViewById(R.id.cancel_adding_item).setOnClickListener(new View.OnClickListener() {
+        header.findViewById(R.id.cancel_adding_item).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAddTodoText.setText("");

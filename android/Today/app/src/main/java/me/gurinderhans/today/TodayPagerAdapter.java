@@ -20,7 +20,7 @@ public class TodayPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return PageFragment.newInstance(position == 0 ? "Today" : "Tomorrow");
+        return PageFragment.newInstance(position == 0 ? "TODAY" : "TOMORROW");
     }
 
     @Override
