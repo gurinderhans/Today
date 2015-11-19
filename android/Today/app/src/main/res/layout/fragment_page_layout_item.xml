@@ -12,6 +12,7 @@
         android:background="@null"
         android:gravity="center_vertical"
         android:imeOptions="actionDone"
+        android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
         android:paddingEnd="27dp"
         android:paddingStart="27dp"
         android:text="Todo item text"

@@ -3,6 +3,8 @@ package me.gurinderhans.today;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 
 /**
@@ -32,6 +34,13 @@ public class TodoItemView extends EditText {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return mIsEditable && super.onTouchEvent(event);
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        InputConnection conn = super.onCreateInputConnection(outAttrs);
+        outAttrs.imeOptions &= ~EditorInfo.IME_FLAG_NO_ENTER_ACTION;
+        return conn;
     }
 
     private void setEditable(boolean editable) {
