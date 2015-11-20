@@ -85,8 +85,8 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
                 try {
                     TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
                     if (currentFocus != null) {
-                        currentFocus.allowEditing(false);
                         hideKeyboard((Activity) mContext);
+                        currentFocus.allowEditing(false);
                     }
                 } catch (Exception e) {/**/}
 
