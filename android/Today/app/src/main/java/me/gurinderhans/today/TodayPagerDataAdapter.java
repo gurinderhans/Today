@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by ghans on 11/18/15.
@@ -19,13 +22,16 @@ public class TodayPagerDataAdapter extends ArrayAdapter<TodoItem> {
 
     private LayoutInflater mInflater;
 
+    private Realm realm;
+
     private List<TodoItem> mTodoItemsList = new ArrayList<>();
 
     public TodayPagerDataAdapter(Context context, int resource) {
         super(context, resource);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        this.addAll(mTodoItemsList);
+        // Obtain a Realm instance
+        realm = Realm.getInstance(context);
     }
 
     @Override
@@ -55,10 +61,26 @@ public class TodayPagerDataAdapter extends ArrayAdapter<TodoItem> {
         return convertView;
     }
 
-    public void insertItem(String text, int index) {
+    public void addItem(String text, Date date) {
+
         TodoItem todoItem = new TodoItem(text);
-        mTodoItemsList.add(index, todoItem);
-        this.insert(todoItem, index);
+        todoItem.setCreatedAt(date);
+
+        realm.beginTransaction();
+
+        realm.copyToRealmOrUpdate(todoItem);
+
+        realm.commitTransaction();
+
+        // we're only always inserting at the head here
+        mTodoItemsList.add(0, todoItem);
+        this.insert(todoItem, 0);
+        this.notifyDataSetChanged();
+    }
+
+    public void setAll(List<TodoItem> items) {
+        mTodoItemsList.addAll(items);
+        this.addAll(items);
         this.notifyDataSetChanged();
     }
 

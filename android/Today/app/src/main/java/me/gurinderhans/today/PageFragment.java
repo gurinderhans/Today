@@ -2,7 +2,6 @@ package me.gurinderhans.today;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -24,8 +23,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import org.joda.time.DateTime;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 import me.gurinderhans.today.Keys.PageFragmentKeys;
-import me.gurinderhans.today.TodayPagerDataAdapter.TodoItemViewHolder;
 
 /**
  * Created by ghans on 11/18/15.
@@ -89,7 +91,8 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
         mAddTodoText = (EditText) header.findViewById(R.id.new_item_text);
 
-        mAddTodoText.setHint(getArguments().getString(PageFragmentKeys.TITLE));
+        final String title = getArguments().getString(PageFragmentKeys.TITLE);
+        mAddTodoText.setHint(title);
 
         mAddTodoText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -122,9 +125,13 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String text = mAddTodoText.getText().toString();
-                    if (!text.isEmpty())
-                        mAdapter.insertItem(text, 0);
-                    else {
+                    if (!text.isEmpty()) {
+                        DateTime time = DateTime.now();
+                        if (title != null && title.equals("TOMORROW"))
+                            time = time.plusDays(1);
+
+                        mAdapter.addItem(text, time.toDate());
+                    } else {
                         mAddTodoText.clearFocus();
                         hideKeyboard(getActivity());
                     }
@@ -148,6 +155,22 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
             }
         });
 
+        // Or alternatively do the same all at once (the "Fluent interface"):
+        Realm realm = Realm.getInstance(getContext());
+
+        DateTime now = DateTime.now();
+        DateTime start = now.withTimeAtStartOfDay();
+        DateTime end = start.plusDays(1);
+        if (title != null && title.equals("TOMORROW")) {
+            start = end;
+            end = start.plusDays(1);
+        }
+
+        RealmResults<TodoItem> results = realm.where(TodoItem.class)
+                .between("createdAt", start.toDate(), end.toDate())
+                .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+        mAdapter.setAll(results);
+
         return rootView;
     }
 
@@ -168,7 +191,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
         position -= mListView.getHeaderViewsCount();
 
-        mAdapter.getItem(position).toggleDone();
+//        mAdapter.getItem(position).setDone(!mAdapter.getItem(position).isDone());
         mAdapter.notifyDataSetChanged();
     }
 
