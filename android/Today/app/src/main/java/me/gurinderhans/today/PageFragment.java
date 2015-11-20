@@ -2,7 +2,9 @@ package me.gurinderhans.today;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +30,7 @@ import org.joda.time.DateTime;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import me.gurinderhans.today.Keys.PageFragmentKeys;
+import me.gurinderhans.today.TodayPagerDataAdapter.TodoItemViewHolder;
 
 /**
  * Created by ghans on 11/18/15.
@@ -38,8 +41,12 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
     private TodayPagerDataAdapter mAdapter;
 
+    @Nullable
     private TodoItemView prevEditingView;
+
+    @Nullable
     private TodoItem editingItem;
+
     private ListView mListView;
     private EditText mAddTodoText;
     private Realm realm;
@@ -47,12 +54,19 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     private OnEditorActionListener onEditorActionListener = new OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                    && editingItem != null && prevEditingView != null) {
+
                 realm.beginTransaction();
 
                 editingItem.setText(prevEditingView.getText().toString());
 
+                if (editingItem.isDone())
+                    editingItem.setDone(false);
+
                 realm.commitTransaction();
+
+                mAdapter.notifyDataSetChanged();
 
                 clearEditing();
                 hideKeyboard(getActivity());
@@ -186,6 +200,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         if (prevEditingView != null) {
             prevEditingView.disableEditing();
             prevEditingView = null;
+            editingItem = null;
         }
     }
 
@@ -217,11 +232,15 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         clearEditing();
         mAddTodoText.clearFocus();
 
-        prevEditingView = (TodoItemView) view.findViewById(R.id.item_content);
+        prevEditingView = ((TodoItemViewHolder) mAdapter.getView(position, view, parent).getTag()).itemContent;
+
+        // remove strike-through since now we're editing
+        prevEditingView.setPaintFlags(prevEditingView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+        prevEditingView.setSelection(prevEditingView.getText().length());
 
         editingItem = mAdapter.getItem(position);
 
-        prevEditingView.setSelection(prevEditingView.getText().length());
         prevEditingView.enableEditing();
 
         // listen for done event to hide keyboard and disable editing
