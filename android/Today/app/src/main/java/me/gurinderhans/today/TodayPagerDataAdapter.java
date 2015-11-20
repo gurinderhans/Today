@@ -2,6 +2,7 @@ package me.gurinderhans.today;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodoItemViewHold
     @Override
     public void onBindViewHolder(TodoItemViewHolder holder, int pos) {
         TodoItem todo = mTodoItemsList.get(pos);
+        Log.i(TAG, "bindTo");
         holder.bindTodoItem(todo);
     }
 

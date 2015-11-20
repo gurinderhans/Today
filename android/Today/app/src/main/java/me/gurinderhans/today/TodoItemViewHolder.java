@@ -3,7 +3,6 @@ package me.gurinderhans.today;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,9 +12,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import io.realm.Realm;
-
 import static me.gurinderhans.today.PageFragment.hideKeyboard;
+import static me.gurinderhans.today.TodayPagerDataAdapter.REALM;
 
 /**
  * Created by ghans on 11/19/15.
@@ -29,22 +27,27 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
 
     private final TodoItemView todoTextView;
     private TodoItem todoItem;
-    public Realm realm;
     private Context mContext;
-
+    private boolean todoTextViewHasFocus;
 
     public TodoItemViewHolder(View itemView) {
         super(itemView);
 
         mContext = itemView.getContext();
 
-        realm = Realm.getInstance(mContext);
-
         todoTextView = (TodoItemView) itemView.findViewById(R.id.item_content);
 
         todoTextView.setOnClickListener(this);
         todoTextView.setOnLongClickListener(this);
         todoTextView.setOnEditorActionListener(this);
+        todoTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                todoTextViewHasFocus = hasFocus;
+                if (!hasFocus)
+                    todoTextView.allowEditing(false);
+            }
+        });
     }
 
     public void bindTodoItem(TodoItem item) {
@@ -54,30 +57,32 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
     }
 
     private void toggleDone() {
-        realm.beginTransaction();
+        REALM.beginTransaction();
         todoItem.setDone(!todoItem.isDone());
-        realm.commitTransaction();
+        REALM.commitTransaction();
 
-        Log.i(TAG, "toggleDone, done:" + todoItem.isDone());
-
-        todoTextView.strikeThrough(todoItem.isDone());
+        bindTodoItem(todoItem);
     }
 
     private void onTodoTextChanged() {
-        realm.beginTransaction();
+        REALM.beginTransaction();
 
         todoItem.setText(todoTextView.getText().toString());
 
-//        if (todoItem.isDone()) todoItem.setDone(false);
+        if (todoItem.isDone())
+            todoItem.setDone(false);
 
-        realm.commitTransaction();
+        REALM.commitTransaction();
+
+        bindTodoItem(todoItem);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_content:
-                toggleDone();
+                if (!todoTextViewHasFocus)
+                    toggleDone();
                 break;
             default:
                 break;
@@ -106,6 +111,7 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     onTodoTextChanged();
                     todoTextView.allowEditing(false);
+                    todoTextViewHasFocus = false;
                     hideKeyboard((Activity) mContext);
                 }
                 break;
