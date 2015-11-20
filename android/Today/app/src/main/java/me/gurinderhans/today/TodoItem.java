@@ -19,26 +19,27 @@ public class TodoItem extends RealmObject {
 
     private Date createdAt;
 
-    public void setText(String text) {
-        this.text = text;
-    }
+    public TodoItem() {/**/}
 
-    public TodoItem(String text) {
+    public TodoItem(String text, Date createdAt) {
         this.text = text;
+        this.createdAt = createdAt;
     }
-
-    public TodoItem() {/* empty */}
 
     public String getText() {
         return text;
     }
 
-    public void setDone(boolean done) {
-        this.done = done;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isDone() {
         return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public Date getCreatedAt() {

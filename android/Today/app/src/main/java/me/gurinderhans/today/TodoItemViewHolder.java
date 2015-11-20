@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import static me.gurinderhans.today.PageFragment.hideKeyboard;
-import static me.gurinderhans.today.TodayPagerDataAdapter.REALM;
+import static me.gurinderhans.today.TodayPagerDataAdapter.REALM_INSTANCE;
 
 /**
  * Created by ghans on 11/19/15.
@@ -57,22 +57,22 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
     }
 
     private void toggleDone() {
-        REALM.beginTransaction();
+        REALM_INSTANCE.beginTransaction();
         todoItem.setDone(!todoItem.isDone());
-        REALM.commitTransaction();
+        REALM_INSTANCE.commitTransaction();
 
         bindTodoItem(todoItem);
     }
 
     private void onTodoTextChanged() {
-        REALM.beginTransaction();
+        REALM_INSTANCE.beginTransaction();
 
         todoItem.setText(todoTextView.getText().toString());
 
         if (todoItem.isDone())
             todoItem.setDone(false);
 
-        REALM.commitTransaction();
+        REALM_INSTANCE.commitTransaction();
 
         bindTodoItem(todoItem);
     }

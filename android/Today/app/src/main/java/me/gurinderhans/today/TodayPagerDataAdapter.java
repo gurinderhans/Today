@@ -2,9 +2,7 @@ package me.gurinderhans.today;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -20,26 +18,25 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodoItemViewHold
 
     public static final String TAG = TodayPagerDataAdapter.class.getSimpleName();
 
-    public static Realm REALM;
+    public static Realm REALM_INSTANCE;
 
     private List<TodoItem> mTodoItemsList = new ArrayList<>();
 
     public TodayPagerDataAdapter(Context context) {
-        REALM = Realm.getInstance(context);
+        REALM_INSTANCE = Realm.getInstance(context);
     }
 
     @Override
     public TodoItemViewHolder onCreateViewHolder(ViewGroup parent, int pos) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_page_layout_item, parent, false);
-        return new TodoItemViewHolder(view);
+        return new TodoItemViewHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.fragment_page_layout_item, parent, false)
+        );
     }
 
     @Override
     public void onBindViewHolder(TodoItemViewHolder holder, int pos) {
-        TodoItem todo = mTodoItemsList.get(pos);
-        Log.i(TAG, "bindTo");
-        holder.bindTodoItem(todo);
+        holder.bindTodoItem(mTodoItemsList.get(pos));
     }
 
     @Override
@@ -48,22 +45,12 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodoItemViewHold
     }
 
     public void addItem(String text, Date date) {
-
-        TodoItem todoItem = new TodoItem(text);
-        todoItem.setCreatedAt(date);
-
-        REALM.beginTransaction();
-
-        REALM.copyToRealmOrUpdate(todoItem);
-
-        REALM.commitTransaction();
-
-        mTodoItemsList.add(0, todoItem);
-        this.notifyDataSetChanged();
+        REALM_INSTANCE.beginTransaction();
+        mTodoItemsList.add(0, REALM_INSTANCE.copyToRealmOrUpdate(new TodoItem(text, date)));
+        REALM_INSTANCE.commitTransaction();
     }
 
     public void setAll(List<TodoItem> items) {
         mTodoItemsList.addAll(items);
-        this.notifyDataSetChanged();
     }
 }
