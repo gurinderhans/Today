@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:paddingBottom="18dp"
-              android:paddingTop="18dp">
+              android:layout_height="match_parent">
 
     <me.gurinderhans.today.TodoItemView
         android:id="@+id/item_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@null"
         android:gravity="center_vertical"
         android:imeOptions="actionDone"
-        android:inputType="textAutoCorrect|textMultiLine"
+        android:paddingBottom="18dp"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
+        android:paddingTop="18dp"
         android:text="@string/app_name"
         android:textColor="#CC333333"
         android:textSize="18sp"

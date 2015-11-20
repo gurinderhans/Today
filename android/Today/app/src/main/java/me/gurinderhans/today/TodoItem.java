@@ -15,7 +15,7 @@ public class TodoItem extends RealmObject {
     @PrimaryKey
     private String text;
 
-    private boolean done = false;
+    private boolean done;
 
     private Date createdAt;
 
