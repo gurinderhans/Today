@@ -14,7 +14,6 @@ import android.widget.EditText;
 public class TodoItemView extends EditText {
 
     public static final String TAG = TodoItemView.class.getSimpleName();
-    private int prevSuggestions;
 
     public TodoItemView(Context context) {
         super(context);
@@ -43,14 +42,13 @@ public class TodoItemView extends EditText {
         this.setCursorVisible(editingAllowed);
         this.setFocusableInTouchMode(editingAllowed);
 
-//        if (editingAllowed)
-//            this.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-//        else {
-//        }
-        this.setRawInputType(InputType.TYPE_TEXT_VARIATION_FILTER | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
         if (editingAllowed)
-            strikeThrough(false);
+            setInputType(getInputType() & (~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS));
+        else
+            setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
+        if (editingAllowed) strikeThrough(false);
     }
 
     public void strikeThrough(boolean y) {
