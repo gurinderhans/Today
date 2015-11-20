@@ -39,13 +39,21 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     private TodayPagerDataAdapter mAdapter;
 
     private TodoItemView prevEditingView;
+    private TodoItem editingItem;
     private ListView mListView;
     private EditText mAddTodoText;
+    private Realm realm;
 
     private OnEditorActionListener onEditorActionListener = new OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                realm.beginTransaction();
+
+                editingItem.setText(prevEditingView.getText().toString());
+
+                realm.commitTransaction();
+
                 clearEditing();
                 hideKeyboard(getActivity());
             }
@@ -156,7 +164,7 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
         });
 
         // Or alternatively do the same all at once (the "Fluent interface"):
-        Realm realm = Realm.getInstance(getContext());
+        realm = Realm.getInstance(getContext());
 
         DateTime now = DateTime.now();
         DateTime start = now.withTimeAtStartOfDay();
@@ -191,7 +199,12 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
 
         position -= mListView.getHeaderViewsCount();
 
-//        mAdapter.getItem(position).setDone(!mAdapter.getItem(position).isDone());
+        realm.beginTransaction();
+
+        mAdapter.getItem(position).setDone(!mAdapter.getItem(position).isDone());
+
+        realm.commitTransaction();
+
         mAdapter.notifyDataSetChanged();
     }
 
@@ -199,13 +212,14 @@ public class PageFragment extends Fragment implements OnItemClickListener, OnIte
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Log.i(TAG, "editing item");
 
-        if (position == 0)
-            return false;
+        position -= mListView.getHeaderViewsCount();
 
         clearEditing();
         mAddTodoText.clearFocus();
 
         prevEditingView = (TodoItemView) view.findViewById(R.id.item_content);
+
+        editingItem = mAdapter.getItem(position);
 
         prevEditingView.setSelection(prevEditingView.getText().length());
         prevEditingView.enableEditing();
