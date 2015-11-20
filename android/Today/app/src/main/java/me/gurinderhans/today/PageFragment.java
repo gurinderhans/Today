@@ -66,7 +66,7 @@ public class PageFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_page_layout, container, false);
 
-        mAdapter = new TodayPagerDataAdapter(getContext());
+        mAdapter = new TodayPagerDataAdapter(getContext(), rootView.findViewById(R.id.empty_list_view));
 
         mListView = (RecyclerView) rootView.findViewById(R.id.items_list);
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -142,6 +142,7 @@ public class PageFragment extends Fragment {
 
         RealmResults<TodoItem> results = realm.where(TodoItem.class)
                 .between("createdAt", start.toDate(), end.toDate())
+                .equalTo("done", false)
                 .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         mAdapter.setAll(results);
 

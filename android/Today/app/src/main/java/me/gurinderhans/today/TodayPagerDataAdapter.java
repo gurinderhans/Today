@@ -3,6 +3,7 @@ package me.gurinderhans.today;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -21,8 +22,10 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodoItemViewHold
     public static Realm REALM_INSTANCE;
 
     private List<TodoItem> mTodoItemsList = new ArrayList<>();
+    private View emptyView;
 
-    public TodayPagerDataAdapter(Context context) {
+    public TodayPagerDataAdapter(Context context, View emptyView) {
+        this.emptyView = emptyView;
         REALM_INSTANCE = Realm.getInstance(context);
     }
 
@@ -41,6 +44,10 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodoItemViewHold
 
     @Override
     public int getItemCount() {
+        if (mTodoItemsList.size() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+        } else emptyView.setVisibility(View.INVISIBLE);
+
         return mTodoItemsList.size();
     }
 

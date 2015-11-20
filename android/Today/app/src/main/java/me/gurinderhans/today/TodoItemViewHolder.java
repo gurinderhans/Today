@@ -44,8 +44,10 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 todoTextViewHasFocus = hasFocus;
-                if (!hasFocus)
+                if (!hasFocus) {
+                    onTodoTextChanged();
                     todoTextView.allowEditing(false);
+                }
             }
         });
     }
@@ -81,17 +83,17 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_content:
+                if (!todoTextViewHasFocus) {
+                    try {
+                        TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
+                        if (currentFocus != null) {
+                            hideKeyboard((Activity) mContext);
+                            currentFocus.allowEditing(false);
+                        }
+                    } catch (Exception e) {/**/}
 
-                try {
-                    TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
-                    if (currentFocus != null) {
-                        hideKeyboard((Activity) mContext);
-                        currentFocus.allowEditing(false);
-                    }
-                } catch (Exception e) {/**/}
-
-                if (!todoTextViewHasFocus)
                     toggleDone();
+                }
                 break;
             default:
                 break;
