@@ -3,7 +3,6 @@ package me.gurinderhans.today;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,12 +36,6 @@ public class PageFragment extends Fragment {
     public static final String TAG = PageFragment.class.getSimpleName();
 
     private TodayPagerDataAdapter mAdapter;
-
-    @Nullable
-    private TodoItemView prevEditingView;
-
-    @Nullable
-    private TodoItem editingItem;
 
     private RecyclerView mListView;
     private EditText mAddTodoText;
