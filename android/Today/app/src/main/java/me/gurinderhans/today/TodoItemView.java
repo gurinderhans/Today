@@ -1,8 +1,9 @@
 package me.gurinderhans.today;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.text.InputType;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
@@ -14,26 +15,19 @@ public class TodoItemView extends EditText {
 
     public static final String TAG = TodoItemView.class.getSimpleName();
 
-    private boolean mIsEditable = false;
-
     public TodoItemView(Context context) {
         super(context);
-        setEditable(false);
+        allowEditing(false);
     }
 
     public TodoItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setEditable(false);
+        allowEditing(false);
     }
 
     public TodoItemView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setEditable(false);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mIsEditable && super.onTouchEvent(event);
+        allowEditing(false);
     }
 
     @Override
@@ -43,24 +37,25 @@ public class TodoItemView extends EditText {
         return conn;
     }
 
-    private void setEditable(boolean editable) {
-        this.setFocusable(editable);
-        if (editable)
-            this.setFocusableInTouchMode(true);
+    public void allowEditing(boolean editingAllowed) {
+        this.setFocusable(editingAllowed);
+        this.setCursorVisible(editingAllowed);
+        this.setFocusableInTouchMode(editingAllowed);
 
-        this.setEnabled(editable);
-        this.setClickable(editable);
-        this.setCursorVisible(editable);
+        if (editingAllowed)
+            setInputType(getInputType() & (~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS));
+        else
+            setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+
+        if (editingAllowed) strikeThrough(false);
     }
 
-    public void enableEditing() {
-        mIsEditable = true;
-        setEditable(true);
+    public void strikeThrough(boolean y) {
+        if (y) {
+            setPaintFlags(getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            setPaintFlags(getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
     }
-
-    public void disableEditing() {
-        mIsEditable = false;
-        setEditable(false);
-    }
-
 }
