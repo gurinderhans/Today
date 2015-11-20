@@ -103,8 +103,6 @@ public class PageFragment extends Fragment {
             }
         });
 
-        mAddTodoText.clearFocus();
-
         mAddTodoText.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
