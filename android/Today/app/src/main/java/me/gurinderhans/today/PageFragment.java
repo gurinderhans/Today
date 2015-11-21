@@ -136,15 +136,23 @@ public class PageFragment extends Fragment {
         DateTime now = DateTime.now();
         DateTime start = now.withTimeAtStartOfDay();
         DateTime end = start.plusDays(1);
+
+        RealmResults<TodoItem> results;
         if (title != null && title.equals("TOMORROW")) {
             start = end;
             end = start.plusDays(1);
+
+            results = realm.where(TodoItem.class)
+                    .between("setForDate", start.toDate(), end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+        } else {
+            results = realm.where(TodoItem.class)
+                    .lessThan("setForDate", end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         }
 
-        RealmResults<TodoItem> results = realm.where(TodoItem.class)
-                .between("setForDate", start.toDate(), end.toDate())
-                .equalTo("done", false)
-                .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         mAdapter.setAll(results);
 
 
