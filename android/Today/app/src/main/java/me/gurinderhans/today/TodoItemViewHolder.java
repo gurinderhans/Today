@@ -52,33 +52,6 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
         });
     }
 
-    public void bindTodoItem(TodoItem item) {
-        todoItem = item;
-        todoTextView.setText(todoItem.getText());
-        todoTextView.strikeThrough(todoItem.isDone());
-    }
-
-    private void toggleDone() {
-        REALM_INSTANCE.beginTransaction();
-        todoItem.setDone(!todoItem.isDone());
-        REALM_INSTANCE.commitTransaction();
-
-        bindTodoItem(todoItem);
-    }
-
-    private void onTodoTextChanged() {
-        REALM_INSTANCE.beginTransaction();
-
-        todoItem.setText(todoTextView.getText().toString());
-
-        if (todoItem.isDone())
-            todoItem.setDone(false);
-
-        REALM_INSTANCE.commitTransaction();
-
-        bindTodoItem(todoItem);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -130,5 +103,38 @@ public class TodoItemViewHolder extends RecyclerView.ViewHolder implements
                 break;
         }
         return true;
+    }
+
+
+    //
+    // MARK: Custom methods
+    //
+
+
+    public void bindTodoItem(TodoItem item) {
+        todoItem = item;
+        todoTextView.setText(todoItem.getText());
+        todoTextView.strikeThrough(todoItem.isDone());
+    }
+
+    private void toggleDone() {
+        REALM_INSTANCE.beginTransaction();
+        todoItem.setDone(!todoItem.isDone());
+        REALM_INSTANCE.commitTransaction();
+
+        bindTodoItem(todoItem);
+    }
+
+    private void onTodoTextChanged() {
+        REALM_INSTANCE.beginTransaction();
+
+        todoItem.setText(todoTextView.getText().toString());
+
+        if (todoItem.isDone())
+            todoItem.setDone(false);
+
+        REALM_INSTANCE.commitTransaction();
+
+        bindTodoItem(todoItem);
     }
 }

@@ -119,7 +119,7 @@ public class PageFragment extends Fragment {
             }
         });
 
-        rootView.findViewById(R.id.cancel_adding_item).setOnClickListener(new OnClickListener() {
+        (rootView.findViewById(R.id.cancel_adding_item)).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAddTodoText.setText("");
@@ -141,7 +141,7 @@ public class PageFragment extends Fragment {
         }
 
         RealmResults<TodoItem> results = realm.where(TodoItem.class)
-                .between("createdAt", start.toDate(), end.toDate())
+                .between("setForDate", start.toDate(), end.toDate())
                 .equalTo("done", false)
                 .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         mAdapter.setAll(results);

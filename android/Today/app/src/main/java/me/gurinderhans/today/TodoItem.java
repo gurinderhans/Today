@@ -17,13 +17,15 @@ public class TodoItem extends RealmObject {
 
     private boolean done;
 
-    private Date createdAt;
+    private Date createdAt = new Date();
+
+    private Date setForDate;
 
     public TodoItem() {/**/}
 
-    public TodoItem(String text, Date createdAt) {
+    public TodoItem(String text, Date forDate) {
         this.text = text;
-        this.createdAt = createdAt;
+        this.setForDate = forDate;
     }
 
     public String getText() {
@@ -48,5 +50,13 @@ public class TodoItem extends RealmObject {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getSetForDate() {
+        return setForDate;
+    }
+
+    public void setSetForDate(Date setForDate) {
+        this.setForDate = setForDate;
     }
 }
