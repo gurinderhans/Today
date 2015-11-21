@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Today</string>
+    <string name="empty_todo_list_text">Add items to the list...</string>
 </resources>

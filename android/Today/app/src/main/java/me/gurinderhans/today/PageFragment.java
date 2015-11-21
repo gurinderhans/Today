@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import me.gurinderhans.today.Keys.NotificationAlarmTimes;
 import me.gurinderhans.today.Keys.PageFragmentKeys;
 
 /**
@@ -146,6 +147,11 @@ public class PageFragment extends Fragment {
                 .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
         mAdapter.setAll(results);
 
+
+        TodoNotificationReceiver.createAlarm(getContext(), NotificationAlarmTimes.NEXT());
+
         return rootView;
     }
+
+
 }

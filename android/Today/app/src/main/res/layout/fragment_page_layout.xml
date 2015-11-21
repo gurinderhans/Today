@@ -13,6 +13,7 @@
         android:background="@drawable/round_bg"
         android:orientation="vertical">
 
+        <!-- Header -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -85,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Add items to the list..."
+        android:text="@string/empty_todo_list_text"
         android:textColor="#4D333333"
         android:textSize="22sp"
         android:textStyle="bold"
