@@ -133,6 +133,13 @@ public class PageFragment extends Fragment {
         // Or alternatively do the same all at once (the "Fluent interface"):
         realm = Realm.getInstance(getContext());
 
+        // delete `done` items
+        realm.beginTransaction();
+        realm.where(TodoItem.class)
+                .equalTo("done", true)
+                .findAll().clear();
+        realm.commitTransaction();
+
         DateTime now = DateTime.now();
         DateTime start = now.withTimeAtStartOfDay();
         DateTime end = start.plusDays(1);
