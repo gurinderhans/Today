@@ -47,7 +47,6 @@ public class TodoItemView extends EditText {
         else
             setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
-
         if (editingAllowed) strikeThrough(false);
     }
 

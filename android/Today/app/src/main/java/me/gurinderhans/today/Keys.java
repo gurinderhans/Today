@@ -12,16 +12,16 @@ public final class Keys {
 
     public static final class NotificationAlarmTimes {
 
-        public static final String SNOOZE_NOTIF_KEY = "snoozeAlarm";
-        public static final String NOTIFICATION_ACTION_KEY = "me.gurinderhans.TODOS";
-        private static final String TAG = NotificationAlarmTimes.class.getSimpleName();
+        public static final String SNOOZE_NOTIFY_KEY = "snoozeAlarm";
+        public static final String TODO_NOTIFICATION_ACTION_KEY = "me.gurinderhans.TODOS";
 
-        public static final DateTime MORNING = DateTime.now().withTimeAtStartOfDay().plusHours(7);
-        public static final DateTime AFTERNOON = MORNING.plusHours(5);
-        public static final DateTime EVENING = AFTERNOON.plusHours(6);
+        // Constants
+        public static final DateTime MORNING = DateTime.now().withTimeAtStartOfDay().plusHours(7); // 07:00
+        public static final DateTime AFTERNOON = MORNING.plusHours(5); // 12:00
+        public static final DateTime EVENING = AFTERNOON.plusHours(6); // 18:00
 
 
-        public static DateTime NEXT() {
+        public static DateTime nextTime() {
             DateTime now = DateTime.now();
 
             long diffM = MORNING.getMillis() - now.getMillis();
@@ -34,7 +34,7 @@ public final class Keys {
             if (diffA < 0 && diffM < 0 && diffE > 0)
                 return EVENING;
 
-            return MORNING;
+            return MORNING.plusDays(1);
         }
     }
 }

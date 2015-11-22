@@ -155,8 +155,7 @@ public class PageFragment extends Fragment {
 
         mAdapter.setAll(results);
 
-
-        TodoNotificationReceiver.createAlarm(getContext(), NotificationAlarmTimes.NEXT());
+        TodoNotificationReceiver.createAlarm(getContext(), NotificationAlarmTimes.nextTime());
 
         return rootView;
     }
