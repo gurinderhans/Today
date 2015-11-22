@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <me.gurinderhans.today.TodoItemView
+    <me.gurinderhans.today.fragments.todofragment.view.TodoItemView
         android:id="@+id/item_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

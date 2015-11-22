@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.fragments.todofragment.controller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,28 +25,31 @@ import org.joda.time.DateTime;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import me.gurinderhans.today.Keys.NotificationAlarmTimes;
-import me.gurinderhans.today.Keys.PageFragmentKeys;
+import me.gurinderhans.today.R;
+import me.gurinderhans.today.app.Keys.TodoFragmentKeys;
+import me.gurinderhans.today.app.Utils;
+import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
+import me.gurinderhans.today.recievers.TodoNotificationReceiver;
 
 /**
  * Created by ghans on 11/18/15.
  */
-public class PageFragment extends Fragment {
+public class TodoFragment extends Fragment {
 
     @SuppressWarnings("unused")
-    public static final String TAG = PageFragment.class.getSimpleName();
+    public static final String TAG = TodoFragment.class.getSimpleName();
 
-    private TodayPagerDataAdapter mAdapter;
+    private TodoItemDataAdapter mAdapter;
 
     private RecyclerView mListView;
     private EditText mAddTodoText;
     private Realm realm;
 
-    public static PageFragment newInstance(String title) {
-        PageFragment fragment = new PageFragment();
+    public static TodoFragment newInstance(String title) {
+        TodoFragment fragment = new TodoFragment();
 
         Bundle args = new Bundle();
-        args.putString(PageFragmentKeys.TITLE, title);
+        args.putString(TodoFragmentKeys.TITLE, title);
         fragment.setArguments(args);
 
         return fragment;
@@ -65,9 +68,9 @@ public class PageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_page_layout, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_todo_page_layout, container, false);
 
-        mAdapter = new TodayPagerDataAdapter(getContext(), rootView.findViewById(R.id.empty_list_view));
+        mAdapter = new TodoItemDataAdapter(getContext(), rootView.findViewById(R.id.empty_list_view));
 
         mListView = (RecyclerView) rootView.findViewById(R.id.items_list);
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -76,7 +79,7 @@ public class PageFragment extends Fragment {
 
         mAddTodoText = (EditText) rootView.findViewById(R.id.new_item_text);
 
-        final String title = getArguments().getString(PageFragmentKeys.TITLE);
+        final String title = getArguments().getString(TodoFragmentKeys.TITLE);
         mAddTodoText.setHint(title);
 
         mAddTodoText.addTextChangedListener(new TextWatcher() {
@@ -162,7 +165,7 @@ public class PageFragment extends Fragment {
 
         mAdapter.setAll(results);
 
-        TodoNotificationReceiver.createAlarm(getContext(), NotificationAlarmTimes.nextTime());
+        TodoNotificationReceiver.createAlarm(getContext(), Utils.NotificationAlarmTimes.nextTime());
 
         return rootView;
     }

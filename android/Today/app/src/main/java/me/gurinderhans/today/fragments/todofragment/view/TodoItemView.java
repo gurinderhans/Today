@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.fragments.todofragment.view;
 
 import android.content.Context;
 import android.graphics.Paint;

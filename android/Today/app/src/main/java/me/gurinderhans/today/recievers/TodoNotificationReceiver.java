@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.recievers;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -17,12 +17,15 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import me.gurinderhans.today.Keys.NotificationAlarmTimes;
+import me.gurinderhans.today.R;
+import me.gurinderhans.today.activities.MainActivity;
+import me.gurinderhans.today.app.Utils;
+import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 
-import static me.gurinderhans.today.Keys.NotificationAlarmTimes.AFTERNOON;
-import static me.gurinderhans.today.Keys.NotificationAlarmTimes.MORNING;
-import static me.gurinderhans.today.Keys.NotificationAlarmTimes.SNOOZE_NOTIFY_KEY;
-import static me.gurinderhans.today.Keys.NotificationAlarmTimes.TODO_NOTIFICATION_ACTION_KEY;
+import static me.gurinderhans.today.app.Keys.NotificationAlarmKeys.SNOOZE_NOTIFY_KEY;
+import static me.gurinderhans.today.app.Keys.NotificationAlarmKeys.TODO_NOTIFICATION_ACTION_KEY;
+import static me.gurinderhans.today.app.Utils.NotificationAlarmTimes.AFTERNOON;
+import static me.gurinderhans.today.app.Utils.NotificationAlarmTimes.MORNING;
 
 /**
  * Created by ghans on 11/21/15.
@@ -33,6 +36,17 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
     private static final int TODOS_NOTIFICATION_ID = 1;
 
     private NotificationManager mNotificationManager;
+
+    public static void createAlarm(Context context, DateTime when) {
+
+        Intent intent = new Intent(context, TodoNotificationReceiver.class);
+        intent.setAction(TODO_NOTIFICATION_ACTION_KEY);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 3, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, when.getMillis(), pendingIntent);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -46,7 +60,7 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
         }
 
         // ready up the next alarm
-        createAlarm(context, NotificationAlarmTimes.nextTime());
+        createAlarm(context, Utils.NotificationAlarmTimes.nextTime());
 
         List<TodoItem> items = fetchTodayItems(context);
         if (items.size() > 0)
@@ -86,10 +100,10 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
     }
 
     private String createNotificationTitle(int numTodos) {
-        if (NotificationAlarmTimes.nextTime() == MORNING) {
+        if (Utils.NotificationAlarmTimes.nextTime() == MORNING) {
             // notification during evening
             return numTodos + " todos left for today";
-        } else if (NotificationAlarmTimes.nextTime() == AFTERNOON) {
+        } else if (Utils.NotificationAlarmTimes.nextTime() == AFTERNOON) {
             // notification during morning
             return numTodos + " todos scheduled for today";
         } else {
@@ -107,17 +121,6 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
                 .lessThan("setForDate", end.toDate())
                 .equalTo("done", false)
                 .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
-    }
-
-    public static void createAlarm(Context context, DateTime when) {
-
-        Intent intent = new Intent(context, TodoNotificationReceiver.class);
-        intent.setAction(TODO_NOTIFICATION_ACTION_KEY);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 3, intent, 0);
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, when.getMillis(), pendingIntent);
     }
 
 }

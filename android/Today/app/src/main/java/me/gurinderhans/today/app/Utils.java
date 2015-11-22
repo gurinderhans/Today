@@ -1,26 +1,27 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.app;
 
 import org.joda.time.DateTime;
 
 /**
- * Created by ghans on 11/18/15.
+ * Created by ghans on 11/22/15.
  */
-public final class Keys {
-    public static final class PageFragmentKeys {
-        public static final String TITLE = "title";
-    }
+public class Utils {
 
     public static final class NotificationAlarmTimes {
 
-        public static final String SNOOZE_NOTIFY_KEY = "snoozeAlarm";
-        public static final String TODO_NOTIFICATION_ACTION_KEY = "me.gurinderhans.TODOS";
-
-        // Constants
+        /**
+         * Constants
+         */
         public static final DateTime MORNING = DateTime.now().withTimeAtStartOfDay().plusHours(7); // 07:00
         public static final DateTime AFTERNOON = MORNING.plusHours(5); // 12:00
         public static final DateTime EVENING = AFTERNOON.plusHours(6); // 18:00
 
 
+        /**
+         * Computes the next time for the notification alaram to be scheduled at
+         *
+         * @return - time for the alarm to be scheduled at
+         */
         public static DateTime nextTime() {
             DateTime now = DateTime.now();
 

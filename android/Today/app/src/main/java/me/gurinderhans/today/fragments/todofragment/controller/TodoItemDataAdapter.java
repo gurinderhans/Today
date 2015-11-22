@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.fragments.todofragment.controller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,15 +19,16 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
-
-import static me.gurinderhans.today.PageFragment.hideKeyboard;
+import me.gurinderhans.today.R;
+import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
+import me.gurinderhans.today.fragments.todofragment.view.TodoItemView;
 
 /**
  * Created by ghans on 11/18/15.
  */
-public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodayPagerDataAdapter.TodoItemViewHolder> {
+public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapter.TodoItemViewHolder> {
 
-    public static final String TAG = TodayPagerDataAdapter.class.getSimpleName();
+    public static final String TAG = TodoItemDataAdapter.class.getSimpleName();
 
     public Realm REALM_INSTANCE;
 
@@ -35,7 +36,7 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodayPagerDataAd
     private Context mContext;
     private View emptyView;
 
-    public TodayPagerDataAdapter(Context context, View emptyView) {
+    public TodoItemDataAdapter(Context context, View emptyView) {
         mContext = context;
         this.emptyView = emptyView;
         REALM_INSTANCE = Realm.getInstance(context);
@@ -45,7 +46,7 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodayPagerDataAd
     public TodoItemViewHolder onCreateViewHolder(ViewGroup parent, int pos) {
         return new TodoItemViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.fragment_page_layout_item, parent, false)
+                        .inflate(R.layout.fragment_todo_page_layout_item, parent, false)
         );
     }
 
@@ -109,7 +110,7 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodayPagerDataAd
                         try {
                             TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
                             if (currentFocus != null) {
-                                hideKeyboard((Activity) mContext);
+                                TodoFragment.hideKeyboard((Activity) mContext);
                                 currentFocus.allowEditing(false);
                             }
                         } catch (Exception e) {/**/}
@@ -142,7 +143,7 @@ public class TodayPagerDataAdapter extends RecyclerView.Adapter<TodayPagerDataAd
             switch (v.getId()) {
                 case R.id.item_content:
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        hideKeyboard((Activity) mContext);
+                        TodoFragment.hideKeyboard((Activity) mContext);
                         todoTextView.allowEditing(false);
                         todoTextViewHasFocus = false;
                     }

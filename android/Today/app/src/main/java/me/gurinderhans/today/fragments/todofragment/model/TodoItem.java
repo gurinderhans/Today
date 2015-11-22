@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.fragments.todofragment.model;
 
 import java.util.Date;
 

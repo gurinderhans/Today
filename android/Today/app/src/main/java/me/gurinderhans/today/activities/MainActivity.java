@@ -1,4 +1,4 @@
-package me.gurinderhans.today;
+package me.gurinderhans.today.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+
+import me.gurinderhans.today.R;
+import me.gurinderhans.today.app.TodayApplication;
+import me.gurinderhans.today.fragments.todofragment.controller.TodoFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ViewPager pager = (ViewPager) findViewById(R.id.today_pager);
-        pager.setAdapter(new TodayPagerAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new TodoFragmentPagerAdapter(getSupportFragmentManager()));
 
-        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        TodayApplication application = (TodayApplication) getApplication();
         mTracker = application.getDefaultTracker();
     }
 

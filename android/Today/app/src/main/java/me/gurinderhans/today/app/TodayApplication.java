@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package me.gurinderhans.today;
+package me.gurinderhans.today.app;
 
 import android.app.Application;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import me.gurinderhans.today.R;
+
 /**
  * This is a subclass of {@link Application} used to provide shared objects for this app, such as
  * the {@link Tracker}.
  */
-public class AnalyticsApplication extends Application {
+public class TodayApplication extends Application {
     private Tracker mTracker;
 
     /**
