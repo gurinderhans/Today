@@ -72,7 +72,8 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setColor(0xed4c4c) // app accent color
                 .setAutoCancel(true)
-                .addAction(R.drawable.ic_snooze_black_24dp, "Snooze", pIntent)
+                .addAction(R.drawable.ic_snooze_white_24dp,
+                        "Snooze", pIntent)
                 .extend(new WearableExtender()
                         .addAction(new Action(R.drawable.ic_snooze_white_48dp, "Snooze", pIntent)));
 
@@ -100,12 +101,10 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
     private List<TodoItem> fetchTodayItems(Context context) {
         Realm realm = Realm.getInstance(context);
 
-        DateTime now = DateTime.now();
-        DateTime start = now.withTimeAtStartOfDay();
-        DateTime end = start.plusDays(1);
+        DateTime end = DateTime.now().withTimeAtStartOfDay().plusDays(1);
 
         return realm.where(TodoItem.class)
-                .between("setForDate", start.toDate(), end.toDate())
+                .lessThan("setForDate", end.toDate())
                 .equalTo("done", false)
                 .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
     }
