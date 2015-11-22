@@ -2,6 +2,7 @@ package me.gurinderhans.today.fragments.todofragment.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import me.gurinderhans.today.R;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 import me.gurinderhans.today.fragments.todofragment.view.TodoItemView;
@@ -188,9 +190,14 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
 
             } else {
 
-                todoItem.setText(todoTextView.getText().toString());
+                try {
+                    todoItem.setText(todoTextView.getText().toString());
 
-                if (todoItem.isDone()) todoItem.setDone(false);
+                    if (todoItem.isDone()) todoItem.setDone(false);
+
+                } catch (RealmPrimaryKeyConstraintException re) {
+                    Snackbar.make(todoTextView, "Todo item already exists!", Snackbar.LENGTH_LONG).show();
+                }
 
                 bindTodoItem(todoItem);
             }
