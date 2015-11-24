@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -76,21 +79,31 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
         mTodoItemsList.addAll(items);
     }
 
-    class TodoItemViewHolder extends RecyclerView.ViewHolder implements OnClickListener
-            , OnLongClickListener
-            , OnEditorActionListener {
+    class TodoItemViewHolder extends RecyclerView.ViewHolder implements OnEditorActionListener
+            , OnGestureListener
+            , OnDoubleTapListener {
 
         private final TodoItemView todoTextView;
         private TodoItem todoItem;
         private boolean todoTextViewHasFocus;
+        private GestureDetector gestureDetector;
+
+        private TodoItem tmpDeleteItem;
 
         public TodoItemViewHolder(View itemView) {
             super(itemView);
 
             todoTextView = (TodoItemView) itemView.findViewById(R.id.item_content);
 
-            todoTextView.setOnClickListener(this);
-            todoTextView.setOnLongClickListener(this);
+            gestureDetector = new GestureDetector(itemView.getContext(), this);
+
+            todoTextView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return gestureDetector.onTouchEvent(event);
+                }
+            });
+
             todoTextView.setOnEditorActionListener(this);
             todoTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -102,42 +115,6 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                     }
                 }
             });
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.item_content:
-                    if (!todoTextViewHasFocus) {
-                        try {
-                            TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
-                            if (currentFocus != null) {
-                                TodoFragment.hideKeyboard((Activity) mContext);
-                                currentFocus.allowEditing(false);
-                            }
-                        } catch (Exception e) {/**/}
-
-                        toggleDone();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            switch (v.getId()) {
-                case R.id.item_content:
-                    todoTextView.allowEditing(true);
-                    todoTextView.requestFocus();
-                    ((InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE))
-                            .showSoftInput(todoTextView, InputMethodManager.SHOW_IMPLICIT);
-                    break;
-                default:
-                    break;
-            }
-            return true;
         }
 
         @Override
@@ -154,6 +131,86 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                     break;
             }
             return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (!todoTextViewHasFocus) {
+                try {
+                    TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
+                    if (currentFocus != null) {
+                        TodoFragment.hideKeyboard((Activity) mContext);
+                        currentFocus.allowEditing(false);
+                    }
+                } catch (Exception ex) {/**/}
+
+                toggleDone();
+
+                // remove item
+                final int clickedPos = getLayoutPosition();
+                tmpDeleteItem = mTodoItemsList.get(clickedPos);
+                mTodoItemsList.remove(clickedPos);
+                notifyItemRemoved(clickedPos);
+                notifyItemRangeChanged(clickedPos, mTodoItemsList.size());
+
+                Snackbar snackbar = Snackbar.make(todoTextView, "Todo was deleted!", Snackbar.LENGTH_LONG);
+                snackbar.setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // add back in
+                        toggleDone();
+                        mTodoItemsList.add(clickedPos, tmpDeleteItem);
+                        notifyItemInserted(clickedPos);
+                        notifyItemRangeChanged(clickedPos, mTodoItemsList.size());
+                    }
+                });
+                snackbar.show();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            todoTextView.allowEditing(true);
+            todoTextView.requestFocus();
+            ((InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .showSoftInput(todoTextView, InputMethodManager.SHOW_IMPLICIT);
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.i(TAG, "long press");
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return false;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            return false;
         }
 
 
