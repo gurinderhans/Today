@@ -1,6 +1,5 @@
 package me.gurinderhans.today.recievers;
 
-import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -37,17 +36,6 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
 
     private NotificationManager mNotificationManager;
 
-    public static void createAlarm(Context context, DateTime when) {
-
-        Intent intent = new Intent(context, TodoNotificationReceiver.class);
-        intent.setAction(TODO_NOTIFICATION_ACTION_KEY);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 3, intent, 0);
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, when.getMillis(), pendingIntent);
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -55,12 +43,12 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
 
         if (intent.getExtras().getBoolean(SNOOZE_NOTIFY_KEY)) { // snooze feature
             mNotificationManager.cancel(TODOS_NOTIFICATION_ID);
-            createAlarm(context, DateTime.now().plusHours(1));
+            Utils.NotificationAlarmTimes.createAlarm(context, DateTime.now().plusHours(1));
             return;
         }
 
         // ready up the next alarm
-        createAlarm(context, Utils.NotificationAlarmTimes.nextTime());
+        Utils.NotificationAlarmTimes.createAlarm(context, Utils.NotificationAlarmTimes.nextTime());
 
         List<TodoItem> items = fetchTodayItems(context);
         if (items.size() > 0)

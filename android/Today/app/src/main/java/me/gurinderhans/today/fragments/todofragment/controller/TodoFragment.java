@@ -1,7 +1,5 @@
 package me.gurinderhans.today.fragments.todofragment.controller;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,14 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -28,8 +24,8 @@ import io.realm.RealmResults;
 import me.gurinderhans.today.R;
 import me.gurinderhans.today.app.Keys.TodoFragmentKeys;
 import me.gurinderhans.today.app.Utils;
+import me.gurinderhans.today.app.Utils.NotificationAlarmTimes;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
-import me.gurinderhans.today.recievers.TodoNotificationReceiver;
 
 /**
  * Created by ghans on 11/18/15.
@@ -41,7 +37,7 @@ public class TodoFragment extends Fragment {
 
     private TodoItemDataAdapter mAdapter;
 
-    private RecyclerView mListView;
+    private RecyclerView mRecyclerView;
     private EditText mAddTodoText;
     private Realm realm;
 
@@ -55,16 +51,6 @@ public class TodoFragment extends Fragment {
         return fragment;
     }
 
-    public static void hideKeyboard(Activity activity) {
-        try {
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (Exception e) {
-            // Ignore exceptions if any
-            Log.e(TAG, e.toString(), e);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,10 +58,10 @@ public class TodoFragment extends Fragment {
 
         mAdapter = new TodoItemDataAdapter(getContext(), rootView.findViewById(R.id.empty_list_view));
 
-        mListView = (RecyclerView) rootView.findViewById(R.id.items_list);
-        mListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mListView.setItemAnimator(new DefaultItemAnimator());
-        mListView.setAdapter(mAdapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.items_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
 
         mAddTodoText = (EditText) rootView.findViewById(R.id.new_item_text);
 
@@ -113,7 +99,7 @@ public class TodoFragment extends Fragment {
                         mAdapter.addItem(text, time.toDate());
                     } else {
                         mAddTodoText.clearFocus();
-                        hideKeyboard(getActivity());
+                        Utils.hideKeyboard(getActivity());
                     }
 
                     mAddTodoText.setText("");
@@ -128,7 +114,7 @@ public class TodoFragment extends Fragment {
             public void onClick(View v) {
                 mAddTodoText.setText("");
                 mAddTodoText.clearFocus();
-                hideKeyboard(getActivity());
+                Utils.hideKeyboard(getActivity());
                 rootView.findViewById(R.id.cancel_adding_item).setVisibility(View.INVISIBLE);
             }
         });
@@ -165,7 +151,7 @@ public class TodoFragment extends Fragment {
 
         mAdapter.setAll(results);
 
-        TodoNotificationReceiver.createAlarm(getContext(), Utils.NotificationAlarmTimes.nextTime());
+        NotificationAlarmTimes.createAlarm(getContext(), NotificationAlarmTimes.nextTime());
 
         return rootView;
     }

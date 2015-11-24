@@ -25,6 +25,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import me.gurinderhans.today.R;
+import me.gurinderhans.today.app.Utils;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 import me.gurinderhans.today.fragments.todofragment.view.TodoItemView;
 
@@ -122,7 +123,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
             switch (v.getId()) {
                 case R.id.item_content:
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        TodoFragment.hideKeyboard((Activity) mContext);
+                        Utils.hideKeyboard((Activity) mContext);
                         todoTextView.allowEditing(false);
                         todoTextViewHasFocus = false;
                     }
@@ -139,7 +140,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                 try {
                     TodoItemView currentFocus = (TodoItemView) ((Activity) mContext).getCurrentFocus();
                     if (currentFocus != null) {
-                        TodoFragment.hideKeyboard((Activity) mContext);
+                        Utils.hideKeyboard((Activity) mContext);
                         currentFocus.allowEditing(false);
                     }
                 } catch (Exception ex) {/**/}
