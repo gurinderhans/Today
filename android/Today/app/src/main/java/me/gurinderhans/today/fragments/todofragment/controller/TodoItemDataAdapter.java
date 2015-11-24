@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -26,13 +25,15 @@ import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 import me.gurinderhans.today.R;
 import me.gurinderhans.today.app.Utils;
+import me.gurinderhans.today.fragments.todofragment.helper.TodoItemTouchHelperAdapter;
+import me.gurinderhans.today.fragments.todofragment.helper.TodoItemTouchHelperViewHolder;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 import me.gurinderhans.today.fragments.todofragment.view.TodoItemView;
 
 /**
  * Created by ghans on 11/18/15.
  */
-public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapter.TodoItemViewHolder> {
+public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapter.TodoItemViewHolder> implements TodoItemTouchHelperAdapter {
 
     public static final String TAG = TodoItemDataAdapter.class.getSimpleName();
 
@@ -80,9 +81,17 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
         mTodoItemsList.addAll(items);
     }
 
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        TodoItem prev = mTodoItemsList.remove(fromPosition);
+        mTodoItemsList.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
     class TodoItemViewHolder extends RecyclerView.ViewHolder implements OnEditorActionListener
             , OnGestureListener
-            , OnDoubleTapListener {
+            , OnDoubleTapListener
+            , TodoItemTouchHelperViewHolder {
 
         private final TodoItemView todoTextView;
         private TodoItem todoItem;
@@ -181,7 +190,6 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Log.i(TAG, "long press");
         }
 
         @Override
@@ -261,6 +269,11 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
             }
 
             REALM_INSTANCE.commitTransaction();
+        }
+
+        @Override
+        public void onItemSelected() {
+
         }
     }
 }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -25,6 +26,7 @@ import me.gurinderhans.today.R;
 import me.gurinderhans.today.app.Keys.TodoFragmentKeys;
 import me.gurinderhans.today.app.Utils;
 import me.gurinderhans.today.app.Utils.NotificationAlarmTimes;
+import me.gurinderhans.today.fragments.todofragment.helper.TodoItemTouchHelperCallback;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 
 /**
@@ -37,9 +39,7 @@ public class TodoFragment extends Fragment {
 
     private TodoItemDataAdapter mAdapter;
 
-    private RecyclerView mRecyclerView;
     private EditText mAddTodoText;
-    private Realm realm;
 
     public static TodoFragment newInstance(String title) {
         TodoFragment fragment = new TodoFragment();
@@ -58,10 +58,15 @@ public class TodoFragment extends Fragment {
 
         mAdapter = new TodoItemDataAdapter(getContext(), rootView.findViewById(R.id.empty_list_view));
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.items_list);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.items_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
+
+        // assign item touch callback to adapter and recycler view
+        ItemTouchHelper.Callback callback = new TodoItemTouchHelperCallback(mAdapter);
+        ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mAddTodoText = (EditText) rootView.findViewById(R.id.new_item_text);
 
@@ -119,8 +124,7 @@ public class TodoFragment extends Fragment {
             }
         });
 
-        // Or alternatively do the same all at once (the "Fluent interface"):
-        realm = Realm.getInstance(getContext());
+        Realm realm = Realm.getInstance(getContext());
 
         // delete `done` items
         realm.beginTransaction();
