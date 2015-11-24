@@ -4,13 +4,17 @@
          would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
     <dimen name="activity_horizontal_margin">64dp</dimen>
 
-    <dimen name="day_name_text_size">36sp</dimen>
+    <dimen name="day_name_text_size">30sp</dimen>
     <dimen name="empty_todo_list_label_size">33sp</dimen>
-    <dimen name="todo_item_size">24sp</dimen>
+    <dimen name="todo_item_size">20sp</dimen>
     <dimen name="day_name_text_top_margin">20dp</dimen>
 
     <dimen name="fragment_layout_margin_vertical">30dp</dimen>
     <dimen name="fragment_layout_margin_horizontal">23dp</dimen>
 
-    <dimen name="fragment_inner_padding">38dp</dimen>
+    <dimen name="fragment_inner_padding">30dp</dimen>
+    <dimen name="todo_item_vertical_padding">18dp</dimen>
+
+    <dimen name="day_title_underline_margin_top">15dp</dimen>
+    <dimen name="day_title_underline_margin_bottom">10dp</dimen>
 </resources>

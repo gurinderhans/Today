@@ -16,4 +16,9 @@
     <dimen name="fragment_layout_margin_horizontal">15dp</dimen>
 
     <dimen name="fragment_inner_padding">25dp</dimen>
+
+    <dimen name="todo_item_vertical_padding">18dp</dimen>
+
+    <dimen name="day_title_underline_margin_top">10dp</dimen>
+    <dimen name="day_title_underline_margin_bottom">0dp</dimen>
 </resources>
