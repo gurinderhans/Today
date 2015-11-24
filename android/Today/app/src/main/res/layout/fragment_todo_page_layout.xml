@@ -6,12 +6,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="@dimen/fragment_layout_margin_vertical"
+        android:layout_marginLeft="@dimen/fragment_layout_margin_horizontal"
+        android:layout_marginRight="@dimen/fragment_layout_margin_horizontal"
+        android:layout_marginTop="@dimen/fragment_layout_margin_vertical"
         android:background="@drawable/round_bg"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/fragment_inner_padding"
+        android:paddingRight="@dimen/fragment_inner_padding"
+        android:paddingTop="@dimen/fragment_inner_padding">
 
         <!-- Header -->
         <RelativeLayout
@@ -30,9 +33,6 @@
                     android:id="@+id/new_item_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="22dp"
-                    android:layout_marginStart="22dp"
-                    android:layout_marginTop="20dp"
                     android:layout_weight="0.9"
                     android:background="@null"
                     android:hint="@string/app_name"
@@ -41,7 +41,7 @@
                     android:textColor="#333333"
                     android:textColorHint="@color/colorAccent"
                     android:textCursorDrawable="@null"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/day_name_text_size"
                     android:textStyle="bold"
                     />
 
@@ -49,9 +49,6 @@
                     android:id="@+id/cancel_adding_item"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="20dp"
                     android:layout_weight="0.1"
                     android:padding="5dp"
                     android:src="@drawable/ic_close_black_24dp"
@@ -63,10 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_below="@id/editor_wrapper"
-                android:layout_marginEnd="22dp"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
-                android:layout_marginStart="22dp"
                 android:layout_marginTop="10dp"
                 android:background="#66000000"/>
         </RelativeLayout>
@@ -88,7 +81,7 @@
         android:layout_centerInParent="true"
         android:text="@string/empty_todo_list_text"
         android:textColor="#4D333333"
-        android:textSize="22sp"
+        android:textSize="@dimen/empty_todo_list_label_size"
         android:textStyle="bold"
         android:visibility="invisible"/>
 
