@@ -2,12 +2,14 @@ package me.gurinderhans.today.fragments.todofragment.helper;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 /**
  * Created by ghans on 11/24/15.
  */
 public class TodoItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
+    private static final String TAG = TodoItemTouchHelperCallback.class.getSimpleName();
     private final TodoItemTouchHelperAdapter mAdapter;
 
     public TodoItemTouchHelperCallback(TodoItemTouchHelperAdapter adapter) {
@@ -54,5 +56,6 @@ public class TodoItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
+        mAdapter.onClearView();
     }
 }

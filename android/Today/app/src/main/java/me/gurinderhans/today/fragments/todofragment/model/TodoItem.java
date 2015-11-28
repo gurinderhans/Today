@@ -15,6 +15,8 @@ public class TodoItem extends RealmObject {
     @PrimaryKey
     private String text;
 
+    private int orderNumber;
+
     private boolean done;
 
     private Date createdAt = new Date();
@@ -58,5 +60,13 @@ public class TodoItem extends RealmObject {
 
     public void setSetForDate(Date setForDate) {
         this.setForDate = setForDate;
+    }
+
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }

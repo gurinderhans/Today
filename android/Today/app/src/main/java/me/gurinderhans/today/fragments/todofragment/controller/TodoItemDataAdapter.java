@@ -73,7 +73,11 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
 
     public void addItem(String text, Date date) {
         REALM_INSTANCE.beginTransaction();
-        mTodoItemsList.add(0, REALM_INSTANCE.copyToRealmOrUpdate(new TodoItem(text, date)));
+
+        TodoItem todoItem = new TodoItem(text, date);
+        todoItem.setOrderNumber(mTodoItemsList.size());
+
+        mTodoItemsList.add(0, REALM_INSTANCE.copyToRealmOrUpdate(todoItem));
         REALM_INSTANCE.commitTransaction();
     }
 
@@ -84,8 +88,16 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         TodoItem prev = mTodoItemsList.remove(fromPosition);
-        mTodoItemsList.add(toPosition > fromPosition ? toPosition - 1 : toPosition, prev);
+        mTodoItemsList.add(toPosition, prev);
         notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onClearView() {
+        REALM_INSTANCE.beginTransaction();
+        for (int i = 0; i < mTodoItemsList.size(); i++)
+            mTodoItemsList.get(i).setOrderNumber(mTodoItemsList.size() - 1 - i);
+        REALM_INSTANCE.commitTransaction();
     }
 
     class TodoItemViewHolder extends RecyclerView.ViewHolder implements OnEditorActionListener
@@ -163,7 +175,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                 notifyItemRemoved(clickedPos);
                 notifyItemRangeChanged(clickedPos, mTodoItemsList.size());
 
-                Snackbar snackbar = Snackbar.make(todoTextView, "Todo was deleted!", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(todoTextView, "Todo was deleted", Snackbar.LENGTH_LONG);
                 snackbar.setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -174,6 +186,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                         notifyItemRangeChanged(clickedPos, mTodoItemsList.size());
                     }
                 });
+                snackbar.setActionTextColor(mContext.getResources().getColor(R.color.colorAccent));
                 snackbar.show();
             }
             return true;
@@ -262,7 +275,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
                     if (todoItem.isDone()) todoItem.setDone(false);
 
                 } catch (RealmPrimaryKeyConstraintException re) {
-                    Snackbar.make(todoTextView, "Todo item already exists!", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(todoTextView, "Todo item already exists", Snackbar.LENGTH_LONG).show();
                 }
 
                 bindTodoItem(todoItem);
@@ -273,7 +286,6 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
 
         @Override
         public void onItemSelected() {
-
         }
     }
 }

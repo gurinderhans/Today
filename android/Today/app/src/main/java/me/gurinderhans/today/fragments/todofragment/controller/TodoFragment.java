@@ -145,12 +145,12 @@ public class TodoFragment extends Fragment {
             results = realm.where(TodoItem.class)
                     .between("setForDate", start.toDate(), end.toDate())
                     .equalTo("done", false)
-                    .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
         } else {
             results = realm.where(TodoItem.class)
                     .lessThan("setForDate", end.toDate())
                     .equalTo("done", false)
-                    .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
         }
 
         mAdapter.setAll(results);

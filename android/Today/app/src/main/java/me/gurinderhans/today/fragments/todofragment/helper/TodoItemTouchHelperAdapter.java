@@ -17,4 +17,6 @@ public interface TodoItemTouchHelperAdapter {
      * @see RecyclerView.ViewHolder#getAdapterPosition()
      */
     void onItemMove(int fromPosition, int toPosition);
+
+    void onClearView();
 }
