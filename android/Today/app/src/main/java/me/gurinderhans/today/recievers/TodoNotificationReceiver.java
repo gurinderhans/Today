@@ -108,7 +108,7 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
         return realm.where(TodoItem.class)
                 .lessThan("setForDate", end.toDate())
                 .equalTo("done", false)
-                .findAllSorted("createdAt", RealmResults.SORT_ORDER_DESCENDING);
+                .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
     }
 
 }
