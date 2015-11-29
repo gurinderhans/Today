@@ -1,5 +1,6 @@
 package me.gurinderhans.today.fragments.todofragment.controller;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -69,6 +70,11 @@ public class TodoFragment extends Fragment {
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         mAddTodoText = (EditText) rootView.findViewById(R.id.new_item_text);
+
+        // add typeface
+        Typeface robotoCondensed = Typeface.create("sans-serif-condensed", Typeface.BOLD);
+        if (robotoCondensed != null)
+            mAddTodoText.setTypeface(robotoCondensed);
 
         final String title = getArguments().getString(TodoFragmentKeys.TITLE);
         mAddTodoText.setHint(title);
