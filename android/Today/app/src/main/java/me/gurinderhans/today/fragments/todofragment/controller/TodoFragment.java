@@ -22,10 +22,8 @@ import android.widget.TextView.OnEditorActionListener;
 import org.joda.time.DateTime;
 
 import java.util.Date;
-import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import me.gurinderhans.today.R;
 import me.gurinderhans.today.app.Keys.PagerTab;
 import me.gurinderhans.today.app.Keys.TodoFragmentKeys;
@@ -153,38 +151,11 @@ public class TodoFragment extends Fragment {
                 .findAll().clear();
         realm.commitTransaction();
 
-        mAdapter.setAll(fetchAdapterData(realm, mPageTitle));
+        mAdapter.setAll(Utils.fetchAdapterData(realm, mPageTitle));
 
         NotificationAlarmTimes.createAlarm(getContext(), NotificationAlarmTimes.nextTime());
 
         return rootView;
-    }
-
-    private List<TodoItem> fetchAdapterData(Realm realm, String dayTitle) {
-
-        DateTime now = DateTime.now();
-        DateTime start = now.withTimeAtStartOfDay();
-        DateTime end = start.plusDays(1);
-
-        if (dayTitle.equals(TODAY.title)) {
-            return realm.where(TodoItem.class)
-                    .lessThan("setForDate", end.toDate())
-                    .equalTo("done", false)
-                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        } else if (dayTitle.equals(TOMORROW.title)) {
-            start = end;
-            end = start.plusDays(1);
-
-            return realm.where(TodoItem.class)
-                    .between("setForDate", start.toDate(), end.toDate())
-                    .equalTo("done", false)
-                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        } else { // SOMEDAY data
-            return realm.where(TodoItem.class)
-                    .isNull("setForDate")
-                    .equalTo("done", false)
-                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        }
     }
 
 }

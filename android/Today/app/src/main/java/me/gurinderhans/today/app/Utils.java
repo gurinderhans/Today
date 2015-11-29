@@ -10,10 +10,17 @@ import android.view.inputmethod.InputMethodManager;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 import me.gurinderhans.today.fragments.todofragment.controller.TodoFragment;
+import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 import me.gurinderhans.today.recievers.TodoNotificationReceiver;
 
 import static me.gurinderhans.today.app.Keys.NotificationAlarmKeys.TODO_NOTIFICATION_ACTION_KEY;
+import static me.gurinderhans.today.app.Keys.PagerTab.TODAY;
+import static me.gurinderhans.today.app.Keys.PagerTab.TOMORROW;
 
 /**
  * Created by ghans on 11/22/15.
@@ -28,6 +35,33 @@ public class Utils {
         } catch (Exception e) {
             // Ignore exceptions if any
             Log.e(TodoFragment.TAG, e.toString(), e);
+        }
+    }
+
+    public static List<TodoItem> fetchAdapterData(Realm realm, String dayTitle) {
+
+        DateTime now = DateTime.now();
+        DateTime start = now.withTimeAtStartOfDay();
+        DateTime end = start.plusDays(1);
+
+        if (dayTitle.equals(TODAY.title)) {
+            return realm.where(TodoItem.class)
+                    .lessThan("setForDate", end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
+        } else if (dayTitle.equals(TOMORROW.title)) {
+            start = end;
+            end = start.plusDays(1);
+
+            return realm.where(TodoItem.class)
+                    .between("setForDate", start.toDate(), end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
+        } else { // SOMEDAY data
+            return realm.where(TodoItem.class)
+                    .isNull("setForDate")
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
         }
     }
 

@@ -15,7 +15,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import me.gurinderhans.today.R;
 import me.gurinderhans.today.activities.MainActivity;
 import me.gurinderhans.today.app.Utils;
@@ -23,6 +22,7 @@ import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
 
 import static me.gurinderhans.today.app.Keys.NotificationAlarmKeys.SNOOZE_NOTIFY_KEY;
 import static me.gurinderhans.today.app.Keys.NotificationAlarmKeys.TODO_NOTIFICATION_ACTION_KEY;
+import static me.gurinderhans.today.app.Keys.PagerTab.TODAY;
 import static me.gurinderhans.today.app.Utils.NotificationAlarmTimes.AFTERNOON;
 import static me.gurinderhans.today.app.Utils.NotificationAlarmTimes.MORNING;
 
@@ -50,7 +50,8 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
         // ready up the next alarm
         Utils.NotificationAlarmTimes.createAlarm(context, Utils.NotificationAlarmTimes.nextTime());
 
-        List<TodoItem> items = fetchTodayItems(context);
+        Realm realm = Realm.getInstance(context);
+        List<TodoItem> items = Utils.fetchAdapterData(realm, TODAY.title);
         if (items.size() > 0)
             generateNotification(context, items);
     }
@@ -99,16 +100,4 @@ public class TodoNotificationReceiver extends BroadcastReceiver {
             return numTodos + " todos still to go";
         }
     }
-
-    private List<TodoItem> fetchTodayItems(Context context) {
-        Realm realm = Realm.getInstance(context);
-
-        DateTime end = DateTime.now().withTimeAtStartOfDay().plusDays(1);
-
-        return realm.where(TodoItem.class)
-                .lessThan("setForDate", end.toDate())
-                .equalTo("done", false)
-                .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-    }
-
 }
