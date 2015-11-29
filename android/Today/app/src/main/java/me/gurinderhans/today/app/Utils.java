@@ -74,7 +74,6 @@ public class Utils {
         public static final DateTime AFTERNOON = MORNING.plusHours(5); // 12:00
         public static final DateTime EVENING = AFTERNOON.plusHours(6); // 18:00
 
-
         /**
          * Computes the next time for the notification alaram to be scheduled at
          *
@@ -92,6 +91,9 @@ public class Utils {
 
             if (diffA < 0 && diffM < 0 && diffE > 0)
                 return EVENING;
+
+            if (now.getHourOfDay() < MORNING.getHourOfDay())
+                return MORNING;
 
             return MORNING.plusDays(1);
         }
