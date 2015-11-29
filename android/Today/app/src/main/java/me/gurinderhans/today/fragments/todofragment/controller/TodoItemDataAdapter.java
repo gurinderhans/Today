@@ -2,6 +2,7 @@ package me.gurinderhans.today.fragments.todofragment.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
@@ -71,7 +72,7 @@ public class TodoItemDataAdapter extends RecyclerView.Adapter<TodoItemDataAdapte
         return mTodoItemsList.size();
     }
 
-    public void addItem(String text, Date date) {
+    public void addItem(String text, @Nullable Date date) {
         REALM_INSTANCE.beginTransaction();
 
         TodoItem todoItem = new TodoItem(text, date);

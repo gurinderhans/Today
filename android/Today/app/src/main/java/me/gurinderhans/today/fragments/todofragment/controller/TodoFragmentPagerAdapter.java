@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import me.gurinderhans.today.app.Keys.PagerTab;
+
 /**
  * Created by ghans on 11/18/15.
  */
@@ -11,20 +13,17 @@ public class TodoFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     public static final String TAG = TodoFragmentPagerAdapter.class.getSimpleName();
 
-    private static final int NUM_PAGES = 2;
-
-
     public TodoFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return TodoFragment.newInstance(position == 0 ? "TODAY" : "TOMORROW");
+        return TodoFragment.newInstance(PagerTab.getTabWithIndex(position));
     }
 
     @Override
     public int getCount() {
-        return NUM_PAGES;
+        return PagerTab.values().length;
     }
 }

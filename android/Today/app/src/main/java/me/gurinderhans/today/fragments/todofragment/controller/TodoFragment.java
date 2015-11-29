@@ -21,14 +21,21 @@ import android.widget.TextView.OnEditorActionListener;
 
 import org.joda.time.DateTime;
 
+import java.util.Date;
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import me.gurinderhans.today.R;
+import me.gurinderhans.today.app.Keys.PagerTab;
 import me.gurinderhans.today.app.Keys.TodoFragmentKeys;
 import me.gurinderhans.today.app.Utils;
 import me.gurinderhans.today.app.Utils.NotificationAlarmTimes;
 import me.gurinderhans.today.fragments.todofragment.helper.TodoItemTouchHelperCallback;
 import me.gurinderhans.today.fragments.todofragment.model.TodoItem;
+
+import static me.gurinderhans.today.app.Keys.PagerTab.TODAY;
+import static me.gurinderhans.today.app.Keys.PagerTab.TOMORROW;
 
 /**
  * Created by ghans on 11/18/15.
@@ -42,11 +49,13 @@ public class TodoFragment extends Fragment {
 
     private EditText mAddTodoText;
 
-    public static TodoFragment newInstance(String title) {
+    private String mPageTitle;
+
+    public static TodoFragment newInstance(PagerTab tab) {
         TodoFragment fragment = new TodoFragment();
 
         Bundle args = new Bundle();
-        args.putString(TodoFragmentKeys.TITLE, title);
+        args.putString(TodoFragmentKeys.TITLE, tab.title);
         fragment.setArguments(args);
 
         return fragment;
@@ -76,8 +85,8 @@ public class TodoFragment extends Fragment {
         if (robotoCondensed != null)
             mAddTodoText.setTypeface(robotoCondensed);
 
-        final String title = getArguments().getString(TodoFragmentKeys.TITLE);
-        mAddTodoText.setHint(title);
+        mPageTitle = getArguments().getString(TodoFragmentKeys.TITLE);
+        mAddTodoText.setHint(mPageTitle);
 
         mAddTodoText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,16 +111,21 @@ public class TodoFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String text = mAddTodoText.getText().toString();
-                    if (!text.isEmpty()) {
-                        DateTime time = DateTime.now();
-                        if (title != null && title.equals("TOMORROW"))
-                            time = time.plusDays(1);
-
-                        mAdapter.addItem(text, time.toDate());
-                    } else {
+                    if (text.isEmpty()) {
                         mAddTodoText.clearFocus();
                         Utils.hideKeyboard(getActivity());
+                        return true;
                     }
+
+
+                    Date date = null;
+                    if (mPageTitle.equals(TODAY.title) || mPageTitle.equals(TOMORROW.title)) {
+                        DateTime time = DateTime.now();
+                        date = mPageTitle.equals(TODAY.title)
+                                ? time.toDate()
+                                : time.plusDays(1).toDate();
+                    }
+                    mAdapter.addItem(text, date);
 
                     mAddTodoText.setText("");
                     mAdapter.notifyDataSetChanged();
@@ -132,39 +146,45 @@ public class TodoFragment extends Fragment {
 
         Realm realm = Realm.getInstance(getContext());
 
-        // delete `done` items
+        // Delete `done` items
         realm.beginTransaction();
         realm.where(TodoItem.class)
                 .equalTo("done", true)
                 .findAll().clear();
         realm.commitTransaction();
 
-        DateTime now = DateTime.now();
-        DateTime start = now.withTimeAtStartOfDay();
-        DateTime end = start.plusDays(1);
-
-        RealmResults<TodoItem> results;
-        if (title != null && title.equals("TOMORROW")) {
-            start = end;
-            end = start.plusDays(1);
-
-            results = realm.where(TodoItem.class)
-                    .between("setForDate", start.toDate(), end.toDate())
-                    .equalTo("done", false)
-                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        } else {
-            results = realm.where(TodoItem.class)
-                    .lessThan("setForDate", end.toDate())
-                    .equalTo("done", false)
-                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        }
-
-        mAdapter.setAll(results);
+        mAdapter.setAll(fetchAdapterData(realm, mPageTitle));
 
         NotificationAlarmTimes.createAlarm(getContext(), NotificationAlarmTimes.nextTime());
 
         return rootView;
     }
 
+    private List<TodoItem> fetchAdapterData(Realm realm, String dayTitle) {
+
+        DateTime now = DateTime.now();
+        DateTime start = now.withTimeAtStartOfDay();
+        DateTime end = start.plusDays(1);
+
+        if (dayTitle.equals(TODAY.title)) {
+            return realm.where(TodoItem.class)
+                    .lessThan("setForDate", end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
+        } else if (dayTitle.equals(TOMORROW.title)) {
+            start = end;
+            end = start.plusDays(1);
+
+            return realm.where(TodoItem.class)
+                    .between("setForDate", start.toDate(), end.toDate())
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
+        } else { // SOMEDAY data
+            return realm.where(TodoItem.class)
+                    .isNull("setForDate")
+                    .equalTo("done", false)
+                    .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
+        }
+    }
 
 }
