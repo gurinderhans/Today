@@ -57,7 +57,7 @@ public class Utils {
                     .between("setForDate", start.toDate(), end.toDate())
                     .equalTo("done", false)
                     .findAllSorted("orderNumber", RealmResults.SORT_ORDER_DESCENDING);
-        } else { // SOMEDAY data
+        } else { // ONGOING data
             return realm.where(TodoItem.class)
                     .isNull("setForDate")
                     .equalTo("done", false)
